@@ -1,20 +1,16 @@
 import React from "react";
+import { Routes, Route, Switch, Link } from "react-router-dom";
 
-import Hero from "./Home/Hero";
-import Collection from "./Home/Collection";
-import Why from "./Home/Why";
-import How from "./Home/How";
-import Footer from "./Home/Footer";
+import Home from "./Home/Home";
+import About from "./About/About";
 
 const App = () => {
   return (
-    <div>
-      <Hero />
-      <Collection />
-      <Why />
-      <How />
-      <Footer />
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      {/*MAKE SURE ALL ROUTES ARE WORKING*/}
+      <Route path="about" element={<About />} />
+    </Routes>
   );
 };
 
