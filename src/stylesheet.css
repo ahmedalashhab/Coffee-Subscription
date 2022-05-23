@@ -1,0 +1,133 @@
+:root {
+    --first-color: #83888F;
+    --second-color: #333D4B;
+    --background-cream: #FEFCF7;
+    --button-green: #0E8784;
+    --why: #2a313a;
+    --numbers: #fdd6ba;
+}
+
+.barlow-400 {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+}
+
+.barlow-500 {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+}
+.barlow-700 {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+}
+
+.fraunces-500 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+}
+
+.fraunces-700 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+}
+
+.fraunces-900 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+}
+
+.text-gray {
+    color: var(--first-color);
+}
+
+.text-blue {
+    color: var(--second-color)
+}
+
+.text-cream {
+    color: var(--background-cream);
+}
+
+.background-cream {
+    background-color: var(--background-cream);
+}
+
+.background-blue {
+    background-color: var(--second-color)
+}
+
+.button-green {
+    background-color: var(--button-green);
+}
+
+.bg-hero {
+    background-image: url("./components/assets/home/desktop/image-hero-coffeepress.jpg");
+
+}
+
+.all-width {
+    width: 90rem
+}
+
+.most-width {
+    width: 80rem
+}
+
+.hero-size {
+    width: 80rem;
+    height: 37.5rem
+
+}
+
+.our-collection {
+    display: inline-block;
+    background-image: linear-gradient(rgba(150,150,150, 0.6), rgba(150,150,150,0.01));
+    background-clip: text;
+    color: transparent;
+    line-height: 0.8;
+    z-index: 0
+}
+
+.above {
+    z-index: 1
+}
+
+.why {
+    background-color: var(--why);
+}
+
+.how-width {
+    width:64rem
+}
+
+.circles {
+    border: 2px solid rgb(14,134,132);
+    border-radius: 50%;
+    height: 31px;
+    width: 31px;
+    position: relative;
+    z-index: 1;
+
+}
+
+.behind-line {
+    background-color: var(--numbers);
+    width: 33%;
+    height: 3px;
+}
+
+.numbers {
+    color: var(--numbers)
+}
+
+.footer-height {
+    height: 7.5rem
+}
+
+.social:hover svg path, .social:hover {
+    transition: fill 0.2s ease 0s;
+    fill: var(--numbers);
+}
+
+
+
