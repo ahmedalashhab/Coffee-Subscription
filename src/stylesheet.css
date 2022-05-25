@@ -5,6 +5,7 @@
     --button-green: #0E8784;
     --why: #2a313a;
     --numbers: #fdd6ba;
+    --card-hover: #fdd6ba
 }
 
 .barlow-400 {
@@ -38,6 +39,10 @@
 
 .text-gray {
     color: var(--first-color);
+}
+
+.text-gray-2 {
+    color: #acafb2;
 }
 
 .text-blue {
@@ -79,6 +84,10 @@
 
 }
 
+.card-green {
+    background-color: var(--button-green) !important;
+}
+
 .our-collection {
     display: inline-block;
     background-image: linear-gradient(rgba(150,150,150, 0.6), rgba(150,150,150,0.01));
@@ -110,7 +119,23 @@
 
 }
 
+.circles-create {
+    border: 2px solid rgb(14,134,132);
+    background-color: transparent;
+    border-radius: 50%;
+    height: 31px;
+    width: 31px;
+    position: relative;
+    z-index: 1;
+}
+
 .behind-line {
+    background-color: var(--numbers);
+    width: 33.5%;
+    height: 3px;
+}
+
+.behind-line-create {
     background-color: var(--numbers);
     width: 33%;
     height: 3px;
@@ -127,6 +152,37 @@
 .social:hover svg path, .social:hover {
     transition: fill 0.2s ease 0s;
     fill: var(--numbers);
+}
+
+.hero-create {
+    width: 80rem;
+    height: 28.125rem;
+    background-image: url("./components/assets/plan/desktop/image-hero-blackcup.jpg") ;
+}
+
+.how-create {
+    background-image: url("./components/assets/plan/desktop/bg-order-summary.png");
+    background-size: cover;
+}
+
+.sticky-create {
+ position: sticky;
+    top: 100px;
+}
+
+.order-card-color {
+    background-color: #f4f1eb;
+
+
+}
+
+.order-card-height {
+    height: 15.625rem;
+}
+
+.arrow-up {
+    transform: matrix(1, 0, 0, -1, 0, 0);
+
 }
 
 

@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import hero from "../assets/home/desktop/image-hero-coffeepress.jpg";
 import logo from "../assets/shared/desktop/logo.svg";
 
@@ -6,22 +8,6 @@ const Hero = () => {
   return (
     <section className="flex justify-center">
       <div className="all-width background-cream">
-        <div className=" flex justify-between py-10 px-20">
-          <div>
-            <img alt="logo" src={logo} />
-          </div>
-          <div className="justify-between">
-            <span className="mr-8 barlow-500 text-gray text-[12px] hover:text-slate-900 cursor-pointer">
-              HOME
-            </span>
-            <span className="mr-8 barlow-500 text-gray text-[12px] hover:text-slate-900 cursor-pointer">
-              ABOUT US
-            </span>
-            <span className="barlow-500 text-gray text-[12px] hover:text-slate-900 cursor-pointer">
-              CREATE YOUR PLAN
-            </span>
-          </div>
-        </div>
         <div className="flex justify-center ">
           <div className=" bg-hero hero-size rounded-xl">
             <div className="flex flex-col ml-24 w-1/2 gap-8">
