@@ -186,4 +186,8 @@
 }
 
 
+.my-transition{
+    transition: all 0.5s cubic-bezier(1,0,1,0);
+}
+
 

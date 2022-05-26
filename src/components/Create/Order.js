@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Order = () => {
   const [sectionCards, setSectionCards] = useState({
     sectionOne: {
       activeIndex: null,
-      hidden: true,
+      hidden: false,
       cards: [
         {
           name: "Capsule",
@@ -24,6 +25,7 @@ const Order = () => {
     },
     sectionTwo: {
       activeIndex: null,
+      hidden: true,
       cards: [
         {
           name: "Single Origin",
@@ -31,7 +33,7 @@ const Order = () => {
             "Distinct, high quality coffee from a specific family-owned farm",
         },
         {
-          name: "Filter",
+          name: "Decaf",
           description:
             "Just like regular coffee, except the caffeine has been removed",
         },
@@ -44,6 +46,7 @@ const Order = () => {
     },
     sectionThree: {
       activeIndex: null,
+      hidden: true,
       cards: [
         {
           name: "250g",
@@ -64,6 +67,7 @@ const Order = () => {
     },
     sectionFour: {
       activeIndex: null,
+      hidden: true,
       cards: [
         {
           name: "Wholebean",
@@ -83,6 +87,7 @@ const Order = () => {
     },
     sectionFive: {
       activeIndex: null,
+      hidden: true,
       cards: [
         {
           name: "Every week",
@@ -124,8 +129,6 @@ const Order = () => {
     });
   };
 
-  const arrowOnClickHandler = () => {};
-
   return (
     <section className="flex justify-center h-[2000px]">
       <div className=" flex justify-center background-cream all-width">
@@ -152,7 +155,8 @@ const Order = () => {
             </span>
           </div>
           <div className="flex flex-col pl-28 w-5/6 ">
-            <div className="flex mb-12 justify-between items-center">
+            {/*SECTION START*/}
+            <div className="flex mb-4 justify-between items-center">
               <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
                 How do you drink your coffee?
               </h2>
@@ -165,180 +169,438 @@ const Order = () => {
                 }
                 className="arrow-up cursor-pointer"
               >
-                <svg width="19" height="13" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
-                    fill="#0E8784"
-                    fillRule="nonzero"
-                  />
-                </svg>
+                {/*Beautiful animation for the arrow to flip up and down using Framer*/}
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: sectionCards.sectionOne.hidden ? 180 : 0 }}
+                  style={{ rotate: 0 }}
+                >
+                  <svg
+                    width="19"
+                    height="13"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
+                      fill="#0E8784"
+                      fillRule="nonzero"
+                    />
+                  </svg>
+                </motion.div>
               </div>
             </div>
-            <div className="flex justify-center gap-6">
+
+            <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionOne.cards.map((card, index) => {
                 return (
-                  <div
-                    onClick={() => onClickHandler(card, index, "sectionOne")}
-                    className={`${
-                      sectionCards.sectionOne.hidden && "hidden"
-                    } flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer w-1/3 transition ease-linear duration-100
+                  <AnimatePresence>
+                    {!sectionCards.sectionOne.hidden && (
+                      <motion.div
+                        key={index.toString()}
+                        initial={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                        }}
+                        animate={{
+                          y: 0,
+                          opacity: 1,
+                          height: "",
+                        }}
+                        exit={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                          overflow: "hidden",
+                        }}
+                        transition={{
+                          type: "Tween",
+                          duration: 0.5,
+                        }}
+                        onClick={() =>
+                          onClickHandler(card, index, "sectionOne")
+                        }
+                        className={`${
+                          sectionCards.sectionOne.hidden && "hidden"
+                        } flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer 
+                    w-1/3 transition ease-linear duration-100 
                     ${
                       sectionCards.sectionOne.activeIndex === index &&
                       "card-green"
                     }
                     `}
-                  >
-                    <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
-                      {card.name}
-                    </h3>
-                    <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
-                      {card.description}
-                    </p>
-                  </div>
+                      >
+                        <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
+                          {card.name}
+                        </h3>
+                        <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
+                          {card.description}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 );
               })}
             </div>
-            <div className="flex mb-12 mt-16 justify-between items-center">
+
+            {/*SECTION 2*/}
+
+            <div className="flex mb-4 mt-16 justify-between items-center">
               <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
                 What type of coffee?
               </h2>
-              <div className="arrow-up cursor-pointer">
-                <svg width="19" height="13" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
-                    fill="#0E8784"
-                    fillRule="nonzero"
-                  />
-                </svg>
+              {/*REPLICATE TO OTHERS*/}
+              <div
+                onClick={() =>
+                  onClickHideHandler(
+                    !sectionCards.sectionTwo.hidden,
+                    "sectionTwo"
+                  )
+                }
+                className="arrow-up cursor-pointer"
+              >
+                {/*Beautiful animation for the arrow to flip up and down using Framer*/}
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: sectionCards.sectionTwo.hidden ? 180 : 0 }}
+                  style={{ rotate: 0 }}
+                >
+                  <svg
+                    width="19"
+                    height="13"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
+                      fill="#0E8784"
+                      fillRule="nonzero"
+                    />
+                  </svg>
+                </motion.div>
               </div>
             </div>
-            <div className="flex justify-center gap-6">
+
+            <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionTwo.cards.map((card, index) => {
                 return (
-                  <div
-                    onClick={() => onClickHandler(card, index, "sectionTwo")}
-                    className={`flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer w-1/3 transition ease-linear duration-100
+                  <AnimatePresence>
+                    {!sectionCards.sectionTwo.hidden && (
+                      <motion.div
+                        key={index.toString()}
+                        initial={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                        }}
+                        animate={{
+                          y: 0,
+                          opacity: 1,
+                          height: "",
+                        }}
+                        exit={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                          overflow: "hidden",
+                        }}
+                        transition={{
+                          type: "Tween",
+                          duration: 0.5,
+                        }}
+                        onClick={() =>
+                          onClickHandler(card, index, "sectionTwo")
+                        }
+                        className={`${
+                          sectionCards.sectionTwo.hidden && "hidden"
+                        } flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer 
+                    w-1/3 transition ease-linear duration-100 
                     ${
                       sectionCards.sectionTwo.activeIndex === index &&
                       "card-green"
                     }
-                   `}
-                  >
-                    <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
-                      {card.name}
-                    </h3>
-                    <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
-                      {card.description}
-                    </p>
-                  </div>
+                    `}
+                      >
+                        <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
+                          {card.name}
+                        </h3>
+                        <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
+                          {card.description}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 );
               })}
             </div>
-            <div className="flex mb-12 mt-16 justify-between items-center">
+
+            {/*SECTION 3*/}
+
+            <div className="flex mb-4 mt-16 justify-between items-center">
               <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
                 How much would you like?
               </h2>
-              <div className="arrow-up">
-                <svg width="19" height="13" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
-                    fill="#0E8784"
-                    fillRule="nonzero"
-                  />
-                </svg>
+
+              <div
+                onClick={() =>
+                  onClickHideHandler(
+                    !sectionCards.sectionThree.hidden,
+                    "sectionThree"
+                  )
+                }
+                className="arrow-up cursor-pointer"
+              >
+                {/*Beautiful animation for the arrow to flip up and down using Framer*/}
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{
+                    rotate: sectionCards.sectionThree.hidden ? 180 : 0,
+                  }}
+                  style={{ rotate: 0 }}
+                >
+                  <svg
+                    width="19"
+                    height="13"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
+                      fill="#0E8784"
+                      fillRule="nonzero"
+                    />
+                  </svg>
+                </motion.div>
               </div>
             </div>
-            <div className="flex justify-center gap-6">
+
+            <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionThree.cards.map((card, index) => {
                 return (
-                  <div
-                    onClick={() => onClickHandler(card, index, "sectionThree")}
-                    className={`flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer w-1/3 transition ease-linear duration-100
+                  <AnimatePresence>
+                    {!sectionCards.sectionThree.hidden && (
+                      <motion.div
+                        key={index.toString()}
+                        initial={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                        }}
+                        animate={{
+                          y: 0,
+                          opacity: 1,
+                          height: "",
+                        }}
+                        exit={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                          overflow: "hidden",
+                        }}
+                        transition={{
+                          type: "Tween",
+                          duration: 0.5,
+                        }}
+                        onClick={() =>
+                          onClickHandler(card, index, "sectionThree")
+                        }
+                        className={`${
+                          sectionCards.sectionThree.hidden && "hidden"
+                        } flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer 
+                    w-1/3 transition ease-linear duration-100 
                     ${
                       sectionCards.sectionThree.activeIndex === index &&
                       "card-green"
                     }
-                   `}
-                  >
-                    <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
-                      {card.name}
-                    </h3>
-                    <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
-                      {card.description}
-                    </p>
-                  </div>
+                    `}
+                      >
+                        <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
+                          {card.name}
+                        </h3>
+                        <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
+                          {card.description}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 );
               })}
             </div>
-            <div className="flex mb-12 mt-16 justify-between items-center">
+
+            {/*SECTION 4*/}
+
+            <div className="flex mb-4 mt-16 justify-between items-center">
               <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
                 Want us to grind them?
               </h2>
-              <div className="arrow-up">
-                <svg width="19" height="13" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
-                    fill="#0E8784"
-                    fillRule="nonzero"
-                  />
-                </svg>
+              <div
+                onClick={() =>
+                  onClickHideHandler(
+                    !sectionCards.sectionFour.hidden,
+                    "sectionFour"
+                  )
+                }
+                className="arrow-up cursor-pointer"
+              >
+                {/*Beautiful animation for the arrow to flip up and down using Framer*/}
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{
+                    rotate: sectionCards.sectionFour.hidden ? 180 : 0,
+                  }}
+                  style={{ rotate: 0 }}
+                >
+                  <svg
+                    width="19"
+                    height="13"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
+                      fill="#0E8784"
+                      fillRule="nonzero"
+                    />
+                  </svg>
+                </motion.div>
               </div>
             </div>
-            <div className="flex justify-center gap-6">
+            <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionFour.cards.map((card, index) => {
                 return (
-                  <div
-                    onClick={() => onClickHandler(card, index, "sectionFour")}
-                    className={`flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer w-1/3 transition ease-linear duration-100
+                  <AnimatePresence>
+                    {!sectionCards.sectionFour.hidden && (
+                      <motion.div
+                        key={index.toString()}
+                        initial={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                        }}
+                        animate={{
+                          y: 0,
+                          opacity: 1,
+                          height: "",
+                        }}
+                        exit={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                          overflow: "hidden",
+                        }}
+                        transition={{
+                          type: "Tween",
+                          duration: 0.5,
+                        }}
+                        onClick={() =>
+                          onClickHandler(card, index, "sectionFour")
+                        }
+                        className={`${
+                          sectionCards.sectionFour.hidden && "hidden"
+                        } flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer 
+                    w-1/3 transition ease-linear duration-100 
                     ${
                       sectionCards.sectionFour.activeIndex === index &&
                       "card-green"
                     }
-                   `}
-                  >
-                    <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
-                      {card.name}
-                    </h3>
-                    <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
-                      {card.description}
-                    </p>
-                  </div>
+                    `}
+                      >
+                        <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
+                          {card.name}
+                        </h3>
+                        <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
+                          {card.description}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 );
               })}
             </div>
-            <div className="flex mb-12 mt-16 justify-between items-center">
+
+            {/*SECTION 5*/}
+
+            <div className="flex mb-4 mt-16 justify-between items-center">
               <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
                 How often should we deliver?
               </h2>
-              <div className="arrow-up">
-                <svg width="19" height="13" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
-                    fill="#0E8784"
-                    fillRule="nonzero"
-                  />
-                </svg>
+              <div
+                onClick={() =>
+                  onClickHideHandler(
+                    !sectionCards.sectionFive.hidden,
+                    "sectionFive"
+                  )
+                }
+                className="arrow-up cursor-pointer"
+              >
+                {/*Beautiful animation for the arrow to flip up and down using Framer*/}
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{
+                    rotate: sectionCards.sectionFive.hidden ? 180 : 0,
+                  }}
+                  style={{ rotate: 0 }}
+                >
+                  <svg
+                    width="19"
+                    height="13"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
+                      fill="#0E8784"
+                      fillRule="nonzero"
+                    />
+                  </svg>
+                </motion.div>
               </div>
             </div>
-            <div className="flex justify-center gap-6">
+            <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionFive.cards.map((card, index) => {
                 return (
-                  <div
-                    onClick={() => onClickHandler(card, index, "sectionFive")}
-                    className={`flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer w-1/3 transition ease-linear duration-100
+                  <AnimatePresence>
+                    {!sectionCards.sectionFive.hidden && (
+                      <motion.div
+                        key={index.toString()}
+                        initial={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                        }}
+                        animate={{
+                          y: 0,
+                          opacity: 1,
+                          height: "",
+                        }}
+                        exit={{
+                          y: 0,
+                          opacity: 0,
+                          height: 0,
+                          overflow: "hidden",
+                        }}
+                        transition={{
+                          type: "Tween",
+                          duration: 0.5,
+                        }}
+                        onClick={() =>
+                          onClickHandler(card, index, "sectionFive")
+                        }
+                        className={`${
+                          sectionCards.sectionFive.hidden && "hidden"
+                        } flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer 
+                    w-1/3 transition ease-linear duration-100 
                     ${
                       sectionCards.sectionFive.activeIndex === index &&
                       "card-green"
                     }
-                   `}
-                  >
-                    <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
-                      {card.name}
-                    </h3>
-                    <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
-                      {card.description}
-                    </p>
-                  </div>
+                    `}
+                      >
+                        <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
+                          {card.name}
+                        </h3>
+                        <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
+                          {card.description}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 );
               })}
             </div>
