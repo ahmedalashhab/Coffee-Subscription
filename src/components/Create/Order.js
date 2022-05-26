@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Order = () => {
+  const [sectionFocus, setSectionFocus] = useState("sectionTwo");
   const [sectionCards, setSectionCards] = useState({
     sectionOne: {
       activeIndex: null,
@@ -105,10 +106,12 @@ const Order = () => {
     },
   });
 
+  useEffect(() => {}, [sectionFocus]);
+
   // In the below onClickHandler, we are accessing the default state, reinserting it into the state via the
   // setSectionCards setter, then we are spreading what's inside the clicked section's contents within
   // the selected section. This is done so that we may update the active index within the appropriate section.
-  const onClickHandler = (card, index, sectionName) => {
+  const onClickHandler = (card, index, sectionName, sectionToFocus) => {
     setSectionCards({
       ...sectionCards,
       [sectionName]: {
@@ -116,6 +119,16 @@ const Order = () => {
         activeIndex: index,
       },
     });
+    setSectionFocus({
+      ...sectionFocus,
+      [sectionToFocus]: {
+        ...sectionFocus[sectionToFocus],
+        focus: sectionToFocus,
+      },
+    });
+    document
+      .getElementById(sectionFocus[sectionToFocus])
+      .scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   // Toggles the "hidden" class that hides and unhides order sections
@@ -157,7 +170,10 @@ const Order = () => {
           <div className="flex flex-col pl-28 w-5/6 ">
             {/*SECTION START*/}
             <div className="flex mb-4 justify-between items-center">
-              <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
+              <h2
+                className="text-gray fraunces-900 text-[40px] leading-[48px] "
+                id="sectionOne"
+              >
                 How do you drink your coffee?
               </h2>
               <div
@@ -193,7 +209,7 @@ const Order = () => {
             <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionOne.cards.map((card, index) => {
                 return (
-                  <AnimatePresence>
+                  <AnimatePresence key={index.toString()}>
                     {!sectionCards.sectionOne.hidden && (
                       <motion.div
                         key={index.toString()}
@@ -218,7 +234,12 @@ const Order = () => {
                           duration: 0.5,
                         }}
                         onClick={() =>
-                          onClickHandler(card, index, "sectionOne")
+                          onClickHandler(
+                            card,
+                            index,
+                            "sectionOne",
+                            "sectionTwo"
+                          )
                         }
                         className={`${
                           sectionCards.sectionOne.hidden && "hidden"
@@ -246,10 +267,13 @@ const Order = () => {
             {/*SECTION 2*/}
 
             <div className="flex mb-4 mt-16 justify-between items-center">
-              <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
+              <h2
+                className="text-gray fraunces-900 text-[40px] leading-[48px]"
+                id="sectionTwo"
+              >
                 What type of coffee?
               </h2>
-              {/*REPLICATE TO OTHERS*/}
+
               <div
                 onClick={() =>
                   onClickHideHandler(
@@ -283,7 +307,7 @@ const Order = () => {
             <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionTwo.cards.map((card, index) => {
                 return (
-                  <AnimatePresence>
+                  <AnimatePresence key={index.toString()}>
                     {!sectionCards.sectionTwo.hidden && (
                       <motion.div
                         key={index.toString()}
@@ -308,7 +332,12 @@ const Order = () => {
                           duration: 0.5,
                         }}
                         onClick={() =>
-                          onClickHandler(card, index, "sectionTwo")
+                          onClickHandler(
+                            card,
+                            index,
+                            "sectionTwo",
+                            "sectionThree"
+                          )
                         }
                         className={`${
                           sectionCards.sectionTwo.hidden && "hidden"
@@ -335,7 +364,10 @@ const Order = () => {
 
             {/*SECTION 3*/}
 
-            <div className="flex mb-4 mt-16 justify-between items-center">
+            <div
+              className="flex mb-4 mt-16 justify-between items-center"
+              id="sectionThree"
+            >
               <h2 className="text-gray fraunces-900 text-[40px] leading-[48px] ">
                 How much would you like?
               </h2>
@@ -375,7 +407,7 @@ const Order = () => {
             <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionThree.cards.map((card, index) => {
                 return (
-                  <AnimatePresence>
+                  <AnimatePresence key={index.toString()}>
                     {!sectionCards.sectionThree.hidden && (
                       <motion.div
                         key={index.toString()}
@@ -400,7 +432,12 @@ const Order = () => {
                           duration: 0.5,
                         }}
                         onClick={() =>
-                          onClickHandler(card, index, "sectionThree")
+                          onClickHandler(
+                            card,
+                            index,
+                            "sectionThree",
+                            "sectionFour"
+                          )
                         }
                         className={`${
                           sectionCards.sectionThree.hidden && "hidden"
@@ -465,7 +502,7 @@ const Order = () => {
             <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionFour.cards.map((card, index) => {
                 return (
-                  <AnimatePresence>
+                  <AnimatePresence key={index.toString()}>
                     {!sectionCards.sectionFour.hidden && (
                       <motion.div
                         key={index.toString()}
@@ -555,7 +592,7 @@ const Order = () => {
             <div className={`flex justify-center gap-6`}>
               {sectionCards.sectionFive.cards.map((card, index) => {
                 return (
-                  <AnimatePresence>
+                  <AnimatePresence key={index.toString()}>
                     {!sectionCards.sectionFive.hidden && (
                       <motion.div
                         key={index.toString()}
