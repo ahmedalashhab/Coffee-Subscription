@@ -45,6 +45,10 @@
     color: #acafb2;
 }
 
+.text-disabled {
+    color: #d8d8d8;
+}
+
 .text-blue {
     color: var(--second-color)
 }
