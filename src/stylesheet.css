@@ -53,6 +53,10 @@
     color: var(--second-color)
 }
 
+.text-green {
+    color: var(--button-green)
+}
+
 .text-cream {
     color: var(--background-cream);
 }
@@ -89,7 +93,7 @@
 }
 
 .card-green {
-    background-color: var(--button-green) !important;
+    background-color: var(--button-green);
 }
 
 .our-collection {
@@ -176,8 +180,10 @@
 
 .order-card-color {
     background-color: #f4f1eb;
+}
 
-
+.order-card-color-important {
+    background-color: #f4f1eb !important
 }
 
 .order-card-height {
@@ -189,9 +195,9 @@
 
 }
 
-
 .my-transition{
     transition: all 0.5s cubic-bezier(1,0,1,0);
 }
+
 
 

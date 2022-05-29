@@ -2,8 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Order = () => {
+  const [perShipmentPrice, setPerShipmentPrice] = useState(0);
+  const [frequency, setFrequency] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
   const [isCapsuleSelected, setIsCapsuleSelected] = useState(false);
   const [quizState, setQuizState] = useState({});
+  // Order Summary below is the same as quizstate but contains user-friendly data
+  const [orderSummary, setOrderSummary] = useState({});
+  const [orderSummaryModal, setOrderSummaryModal] = useState(false);
   const quizArrayLength = Object.entries(quizState).length;
   const [sectionCards, setSectionCards] = useState({
     sectionOne: {
@@ -16,18 +22,21 @@ const Order = () => {
       cards: [
         {
           id: "capsule",
-          name: "Capsule",
+          name: "Capsules",
+          summary: "capsules",
           description: "Compatible with Nespresso systems and similar brewers",
         },
         {
           id: "filter",
           name: "Filter",
+          summary: "filter",
           description:
             "For pour over or drip methods like Aeropress, Chemex, and V60",
         },
         {
           id: "espresso_xl",
           name: "Espresso XL",
+          summary: "espresso_xl",
           description:
             "Dense and finely ground beans for an intense, flavorful experience",
         },
@@ -44,18 +53,20 @@ const Order = () => {
         {
           id: "single",
           name: "Single Origin",
+          summary: "single origin",
           description:
             "Distinct, high quality coffee from a specific family-owned farm",
         },
         {
           id: "decaf",
-          name: "Decaf",
+          name: "decaf",
+          summary: "decaf",
           description:
             "Just like regular coffee, except the caffeine has been removed",
         },
         {
           id: "blended",
-          name: "Blended",
+          name: "blended",
           description:
             "Combination of two or three dark roasted beans of organic coffees",
         },
@@ -72,18 +83,21 @@ const Order = () => {
         {
           id: "quarter",
           name: "250g",
+          summary: "250g",
           description:
             "Perfect for the solo drinker. Yields about 12 delicious cups",
         },
         {
           id: "half",
           name: "500g",
+          summary: "500g",
           description:
             "Perfect option for a couple. Yields about 40 delectable cups",
         },
         {
           id: "kilo",
           name: "1000g",
+          summary: "1000g",
           description:
             "Perfect for offices and events. Yields about 90 delightful cups",
         },
@@ -100,17 +114,20 @@ const Order = () => {
         {
           id: "wholebean",
           name: "Wholebean",
+          summary: "wholebean",
           description: "Best choice if you cherish the full sensory experience",
         },
         {
           id: "filter",
           name: "Filter",
+          summary: "filter",
           description:
             "For drip or pour-over coffee methods such as V60 or Aeropress",
         },
         {
           id: "cafe",
           name: "Cafetiére",
+          summary: "cafetiére",
           description:
             " Course ground beans specially suited for french press coffee",
         },
@@ -127,16 +144,19 @@ const Order = () => {
         {
           id: "weekly",
           name: "Every week",
+          summary: "every week",
           description: "$7.20 per shipment. Includes free first-class shipping",
         },
         {
           id: "bi_monthly",
           name: "Every 2 weeks",
+          summary: "every 2 weeks",
           description: "$9.60 per shipment. Includes free priority shipping",
         },
         {
           id: "monthly",
           name: "Every month",
+          summary: "every month",
           description: "$12.00 per shipment. Includes free priority shipping",
         },
       ],
@@ -180,7 +200,14 @@ const Order = () => {
     document
       .getElementById(quizSwitch())
       .scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [isCapsuleSelected, quizSwitch]);
+
+    if (isCapsuleSelected) {
+      // delete section 4  choices from quizstate
+      delete quizState.grind;
+    }
+
+    console.log(totalPrice);
+  }, [isCapsuleSelected, quizSwitch, totalPrice]);
 
   // In the below onClickHandler, we are accessing the default state, reinserting it into the state via the
   // setSectionCards setter, then we are spreading what's inside the clicked section's contents within
@@ -212,16 +239,60 @@ const Order = () => {
     }
 
     setSectionCards(updateObject);
+
     setQuizState({
       ...quizState,
       [value_key]: card.id,
     });
+
+    setOrderSummary({
+      ...orderSummary,
+      [value_key]: card.summary,
+    });
+
+    if (sectionName === "sectionThree" && card.id === "quarter") {
+      setPerShipmentPrice({
+        weekly: 7.2,
+        bi_monthly: 9.6,
+        monthly: 12.0,
+      });
+    } else if (sectionName === "sectionThree" && card.id === "half") {
+      setPerShipmentPrice({
+        weekly: 13.0,
+        bi_monthly: 17.5,
+        monthly: 22.0,
+      });
+    } else if (sectionName === "sectionThree" && card.id === "kilo") {
+      setPerShipmentPrice({
+        weekly: 22.0,
+        bi_monthly: 32.0,
+        monthly: 42.0,
+      });
+    }
+
+    // set a state for frequency once frequency is selected
+    if (sectionName === "sectionFive" && card.id === "weekly") {
+      setFrequency("weekly");
+    } else if (sectionName === "sectionFive" && card.id === "bi_monthly") {
+      setFrequency("bi_monthly");
+    } else if (sectionName === "sectionFive" && card.id === "monthly") {
+      setFrequency("monthly");
+    }
+
+    if (frequency === "weekly") {
+      setTotalPrice(perShipmentPrice.weekly * 4);
+    } else if (frequency === "bi_monthly") {
+      setTotalPrice(perShipmentPrice.bi_monthly * 2);
+    } else if (frequency === "monthly") {
+      setTotalPrice(perShipmentPrice.monthly);
+    }
+
     if (nextSection === "END") {
       //show summary
     } else onClickHideHandler(false, nextSection, true);
   };
 
-  //TODO: remove the sectionFour choice selected from the quizState if capsule is selected
+  //TODO: remove the sectionFour choice visual (cardgreen) selected from the quizState if capsule is selected
 
   // Toggles the "hidden" class that hides and unhides order sections
   const onClickHideHandler = (hidden, sectionName, skipStateSet) => {
@@ -239,6 +310,16 @@ const Order = () => {
       });
   };
 
+  const orderSummaryText = () => {
+    return `“I drink my coffee ${isCapsuleSelected ? "using" : "as"} ${
+      orderSummary.process || <span className="text-green">_____</span>
+    }, with a ${orderSummary.type || "_____"} type of bean. ${
+      orderSummary.quantity || "_____"
+    }, ${
+      !isCapsuleSelected ? `ground ala ${orderSummary.grind || "_____"}, ` : ""
+    }sent to me ${orderSummary.frequency || "_____"}.”`;
+  };
+
   const capsuleAndSecFour = (sectionName) => {
     //  return text-gray-2 on sectionCards.sectionFour if capsule is selected
     return sectionName === "sectionFour" && isCapsuleSelected;
@@ -249,12 +330,96 @@ const Order = () => {
   };
 
   const handleSideBarClick = (section, sectionName) => {
+    if (sectionName === "sectionFour" && isCapsuleSelected) {
+      return;
+    }
     onClickHideHandler((section.hidden = false), sectionName);
     document.getElementById(sectionName).scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   };
+
+  // - Updating per shipment price (shown in "How often should we deliver?" section at the bottom) based on weight selected
+  //   - If 250g weight is selected
+  //     - Every Week price per shipment is $7.20
+  //     - Every 2 Weeks price per shipment is $9.60
+  //     - Every Month price per shipment is $12.00
+  //   - If 500g weight is selected
+  //     - Every Week price per shipment is $13.00
+  //     - Every 2 Weeks price per shipment is $17.50
+  //     - Every Month price per shipment is $22.00
+  //   - If 1000g weight is selected
+  //     - Every Week price per shipment is $22.00
+  //     - Every 2 Weeks price per shipment is $32.00
+  //     - Every Month price per shipment is $42.00
+  // - Calculating per month cost for the Order Summary modal
+  //   - If Every Week is selected, the Order Summary modal should show the per shipment price multiplied by 4. For example, if 250g weight is selected, the price would be $28.80/month
+  //   - If Every 2 Weeks is selected, the Order Summary modal should show the per shipment price multiplied by 2. For example, if 250g weight is selected, the price would be $19.20/month
+  //   - If Every Month is selected, the Order Summary modal should show the per shipment price multiplied by 1. For example, if 250g weight is selected, the price would be $12.00/month
+
+  // - Calculating the total cost of the order
+  //   - If Every Week is selected, the Order Summary modal should show the total cost of the order as $28.80
+  //   - If Every 2 Weeks is selected, the Order Summary modal should show the total cost of the order as $19.20
+  //   - If Every Month is selected, the Order Summary modal should show the total cost of the order as $12.00
+
+  // const weightSelected = (weight) => {
+  //   if (weight === 250) {
+  //     setPerShipmentPrice({
+  //       weekly: "$7.20",
+  //       bi_monthly: "$9.60",
+  //       monthly: "$12.00",
+  //     });
+  //   } else if (weight === 500) {
+  //     setPerShipmentPrice({
+  //       weekly: "$13.00",
+  //       bi_monthly: "$17.50",
+  //       monthly: "$22.00",
+  //     });
+  //   } else if (weight === 1000) {
+  //     setPerShipmentPrice({
+  //       weekly: "$22.00",
+  //       bi_monthly: "$32.00",
+  //       monthly: "$42.00",
+  //     });
+  //   }
+  // };
+
+  // const totalCost = (perShipmentPrice, shipmentType) => {
+  //   if (shipmentType === "weekly") {
+  //     return `${perShipmentPrice.weekly * 4}`;
+  //   } else if (shipmentType === "bi_monthly") {
+  //     return `${perShipmentPrice.bi_monthly * 2}`;
+  //   } else if (shipmentType === "monthly") {
+  //     return `${perShipmentPrice.monthly}`;
+  //   }
+  // };
+
+  // const handleShipmentType = (shipmentType) => {
+  //   setShipmentType(shipmentType);
+  //   setOrderSummary({
+  //     ...orderSummary,
+  //     shipmentType,
+  //   });
+  // };
+
+  const handleOrderSummary = () => {
+    setOrderSummaryModal(true);
+  };
+
+  const handleOrderSummaryModalClose = () => {
+    setOrderSummaryModal(false);
+  };
+
+  const handleOrderSummaryModalSubmit = () => {
+    setOrderSummaryModal(false);
+    setOrderSummary({
+      ...orderSummary,
+      orderSubmitted: true,
+    });
+  };
+
+  // TODO remove green color from selected card in sectionFour when capsule is selected
 
   // BELOW IS THE RENDERING OF THE COMPONENT
 
@@ -368,9 +533,17 @@ const Order = () => {
                                 }
                                 className={`${
                                   section.hidden && "hidden"
-                                } flex flex-col order-card-color hover:bg-orange-200  order-card-height rounded-lg cursor-pointer 
+                                } flex flex-col ${
+                                  section.activeIndex === index
+                                    ? ""
+                                    : "hover:bg-orange-200 cursor-pointer"
+                                }   order-card-height rounded-lg  
                         w-1/3 transition ease-linear duration-100 
-                        ${section.activeIndex === index && "card-green"}
+                        ${
+                          section.activeIndex === index
+                            ? "card-green"
+                            : "order-card-color"
+                        } 
                         `}
                               >
                                 <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
@@ -391,6 +564,18 @@ const Order = () => {
             )}
 
             {/* END */}
+            <section className="flex justify-center">
+              <div className="why w-full p-16">
+                <div className="flex flex-col justify-center  gap-3">
+                  <h3 className="uppercase barlow-400 text-gray">
+                    order summary
+                  </h3>
+                  <p className="fraunces-900 text-cream text-[24px]">
+                    {orderSummaryText()}
+                  </p>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
