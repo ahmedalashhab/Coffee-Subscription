@@ -1,19 +1,21 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Modal from "./Modal";
 
 const Order = () => {
   const [perShipmentPrice, setPerShipmentPrice] = useState(0);
+  const [orderComplete, setOrderComplete] = useState(false);
   const [frequency, setFrequency] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [isCapsuleSelected, setIsCapsuleSelected] = useState(false);
   const [quizState, setQuizState] = useState({});
+  const quizArrayLength = Object.entries(quizState).length;
   // Order Summary below is the same as quizstate but contains user-friendly data
   const [orderSummary, setOrderSummary] = useState({});
   const [orderSummaryModal, setOrderSummaryModal] = useState(false);
-  const quizArrayLength = Object.entries(quizState).length;
   const [sectionCards, setSectionCards] = useState({
     sectionOne: {
-      value_key: "process",
+      value_key: "coffeeProcess",
       activeIndex: null,
       title: "How do you drink your coffee?",
       sidebar_name: "Preferences",
@@ -179,12 +181,12 @@ const Order = () => {
       case 4:
         return "sectionFive";
       default:
-        return "sectionOne";
+        return "sectionFive";
     }
   }, [isCapsuleSelected, quizArrayLength]);
 
   useEffect(() => {
-    if (quizSwitch() === "sectionFive") {
+    if (quizSwitch() === "sectionFive" && isCapsuleSelected) {
       setSectionCards({
         ...sectionCards,
         sectionFour: {
@@ -196,6 +198,9 @@ const Order = () => {
           hidden: false,
         },
       });
+
+      console.log(perShipmentPrice);
+      console.log(totalPrice);
     }
     document
       .getElementById(quizSwitch())
@@ -206,7 +211,16 @@ const Order = () => {
       delete quizState.grind;
     }
 
-    console.log(totalPrice);
+    //  check if user has completed quiz
+    if (isCapsuleSelected && quizArrayLength === 4) {
+      setOrderComplete(true);
+    } else if (!isCapsuleSelected & (quizArrayLength === 5)) {
+      setOrderComplete(true);
+    } else {
+      setOrderComplete(false);
+    }
+
+    setTotalPrice(totalPrice);
   }, [isCapsuleSelected, quizSwitch, totalPrice]);
 
   // In the below onClickHandler, we are accessing the default state, reinserting it into the state via the
@@ -310,14 +324,81 @@ const Order = () => {
       });
   };
 
-  const orderSummaryText = () => {
-    return `“I drink my coffee ${isCapsuleSelected ? "using" : "as"} ${
-      orderSummary.process || <span className="text-green">_____</span>
-    }, with a ${orderSummary.type || "_____"} type of bean. ${
-      orderSummary.quantity || "_____"
-    }, ${
-      !isCapsuleSelected ? `ground ala ${orderSummary.grind || "_____"}, ` : ""
-    }sent to me ${orderSummary.frequency || "_____"}.”`;
+  const OrderSummaryText = () => {
+    return (
+      <>
+        <p style={{ display: "inline-block" }}>{`“I drink my coffee ${
+          isCapsuleSelected ? "using " : "as "
+        }`}</p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          &nbsp;{orderSummary.coffeeProcess || "_____"}
+        </p>
+        <p style={{ display: "inline-block" }}>, with a</p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          &nbsp;{orderSummary.type || "_____"}
+        </p>
+        <p style={{ display: "inline-block" }}>&nbsp; type of bean. &nbsp;</p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          {orderSummary.quantity || "_____"}
+        </p>
+        {!isCapsuleSelected && (
+          <p style={{ display: "inline-block" }}>
+            , ground ala
+            <span className="text-green" style={{ display: "inline-block" }}>
+              &nbsp;{orderSummary.grind || "_____"}
+            </span>
+          </p>
+        )}
+        <p style={{ display: "inline-block" }}>, sent to me</p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          &nbsp;{orderSummary.frequency || "_____"}
+        </p>
+        <p style={{ display: "inline-block" }}>.”</p>
+      </>
+    );
+  };
+
+  const OrderSummaryTextModal = () => {
+    return (
+      <>
+        <p
+          className="text-gray"
+          style={{ display: "inline-block" }}
+        >{`“I drink my coffee ${isCapsuleSelected ? "using " : "as "}`}</p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          &nbsp;{orderSummary.coffeeProcess || "_____"}
+        </p>
+        <p className="text-gray" style={{ display: "inline-block" }}>
+          , with a
+        </p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          &nbsp;{orderSummary.type || "_____"}
+        </p>
+        <p className="text-gray" style={{ display: "inline-block" }}>
+          &nbsp; type of bean. &nbsp;
+        </p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          {orderSummary.quantity || "_____"}
+        </p>
+        {!isCapsuleSelected && (
+          <p className="text-gray" style={{ display: "inline-block" }}>
+            , ground ala
+            <span className="text-green" style={{ display: "inline-block" }}>
+              &nbsp;{orderSummary.grind || "_____"}
+            </span>
+          </p>
+        )}
+        <p className="text-gray" style={{ display: "inline-block" }}>
+          , sent to me
+        </p>
+        <p style={{ display: "inline-block" }} className="text-green">
+          &nbsp;{orderSummary.frequency || "_____"}
+        </p>
+        <p className="text-gray" style={{ display: "inline-block" }}>
+          .”
+        </p>
+      </>
+    );
   };
 
   const capsuleAndSecFour = (sectionName) => {
@@ -340,83 +421,12 @@ const Order = () => {
     });
   };
 
-  // - Updating per shipment price (shown in "How often should we deliver?" section at the bottom) based on weight selected
-  //   - If 250g weight is selected
-  //     - Every Week price per shipment is $7.20
-  //     - Every 2 Weeks price per shipment is $9.60
-  //     - Every Month price per shipment is $12.00
-  //   - If 500g weight is selected
-  //     - Every Week price per shipment is $13.00
-  //     - Every 2 Weeks price per shipment is $17.50
-  //     - Every Month price per shipment is $22.00
-  //   - If 1000g weight is selected
-  //     - Every Week price per shipment is $22.00
-  //     - Every 2 Weeks price per shipment is $32.00
-  //     - Every Month price per shipment is $42.00
-  // - Calculating per month cost for the Order Summary modal
-  //   - If Every Week is selected, the Order Summary modal should show the per shipment price multiplied by 4. For example, if 250g weight is selected, the price would be $28.80/month
-  //   - If Every 2 Weeks is selected, the Order Summary modal should show the per shipment price multiplied by 2. For example, if 250g weight is selected, the price would be $19.20/month
-  //   - If Every Month is selected, the Order Summary modal should show the per shipment price multiplied by 1. For example, if 250g weight is selected, the price would be $12.00/month
-
-  // - Calculating the total cost of the order
-  //   - If Every Week is selected, the Order Summary modal should show the total cost of the order as $28.80
-  //   - If Every 2 Weeks is selected, the Order Summary modal should show the total cost of the order as $19.20
-  //   - If Every Month is selected, the Order Summary modal should show the total cost of the order as $12.00
-
-  // const weightSelected = (weight) => {
-  //   if (weight === 250) {
-  //     setPerShipmentPrice({
-  //       weekly: "$7.20",
-  //       bi_monthly: "$9.60",
-  //       monthly: "$12.00",
-  //     });
-  //   } else if (weight === 500) {
-  //     setPerShipmentPrice({
-  //       weekly: "$13.00",
-  //       bi_monthly: "$17.50",
-  //       monthly: "$22.00",
-  //     });
-  //   } else if (weight === 1000) {
-  //     setPerShipmentPrice({
-  //       weekly: "$22.00",
-  //       bi_monthly: "$32.00",
-  //       monthly: "$42.00",
-  //     });
-  //   }
-  // };
-
-  // const totalCost = (perShipmentPrice, shipmentType) => {
-  //   if (shipmentType === "weekly") {
-  //     return `${perShipmentPrice.weekly * 4}`;
-  //   } else if (shipmentType === "bi_monthly") {
-  //     return `${perShipmentPrice.bi_monthly * 2}`;
-  //   } else if (shipmentType === "monthly") {
-  //     return `${perShipmentPrice.monthly}`;
-  //   }
-  // };
-
-  // const handleShipmentType = (shipmentType) => {
-  //   setShipmentType(shipmentType);
-  //   setOrderSummary({
-  //     ...orderSummary,
-  //     shipmentType,
-  //   });
-  // };
-
-  const handleOrderSummary = () => {
-    setOrderSummaryModal(true);
-  };
-
-  const handleOrderSummaryModalClose = () => {
-    setOrderSummaryModal(false);
-  };
-
-  const handleOrderSummaryModalSubmit = () => {
-    setOrderSummaryModal(false);
-    setOrderSummary({
-      ...orderSummary,
-      orderSubmitted: true,
-    });
+  const handleQuizSubmit = () => {
+    if (orderComplete === true) {
+      setOrderSummaryModal(true);
+    } else setOrderSummaryModal(false);
+    console.log(orderSummaryModal);
+    setTotalPrice(totalPrice);
   };
 
   // TODO remove green color from selected card in sectionFour when capsule is selected
@@ -564,21 +574,42 @@ const Order = () => {
             )}
 
             {/* END */}
-            <section className="flex justify-center">
-              <div className="why w-full p-16">
+            <section className="flex flex-col justify-center">
+              <div className="why w-full px-16 py-8">
                 <div className="flex flex-col justify-center  gap-3">
                   <h3 className="uppercase barlow-400 text-gray">
                     order summary
                   </h3>
                   <p className="fraunces-900 text-cream text-[24px]">
-                    {orderSummaryText()}
+                    <OrderSummaryText />
                   </p>
                 </div>
+              </div>
+              <div className="flex justify-end mt-10">
+                <button
+                  onClick={handleQuizSubmit}
+                  className={`${
+                    orderComplete
+                      ? "button-green hover:bg-teal-400"
+                      : "bg-gray-300 cursor-default"
+                  } px-9 py-3 rounded-lg text-cream fraunces-700 `}
+                >
+                  Create my plan!
+                </button>
               </div>
             </section>
           </div>
         </div>
       </div>
+      <Modal
+        setToggle={(boolean) => {
+          setOrderSummaryModal(boolean);
+        }}
+        toggle={orderSummaryModal}
+        title="Order Summary"
+        content={OrderSummaryTextModal()}
+        totalPrice={totalPrice}
+      />
     </section>
   );
 };
