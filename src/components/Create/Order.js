@@ -69,6 +69,7 @@ const Order = () => {
         {
           id: "blended",
           name: "blended",
+          summary: "blended",
           description:
             "Combination of two or three dark roasted beans of organic coffees",
         },
@@ -88,6 +89,11 @@ const Order = () => {
           summary: "250g",
           description:
             "Perfect for the solo drinker. Yields about 12 delicious cups",
+          price: {
+            weekly: 7.2,
+            bi_monthly: 9.6,
+            monthly: 12.0,
+          },
         },
         {
           id: "half",
@@ -95,6 +101,11 @@ const Order = () => {
           summary: "500g",
           description:
             "Perfect option for a couple. Yields about 40 delectable cups",
+          price: {
+            weekly: 13.0,
+            bi_monthly: 17.5,
+            monthly: 22.0,
+          },
         },
         {
           id: "kilo",
@@ -102,6 +113,11 @@ const Order = () => {
           summary: "1000g",
           description:
             "Perfect for offices and events. Yields about 90 delightful cups",
+          price: {
+            weekly: 22.0,
+            bi_monthly: 32.0,
+            monthly: 42.0,
+          },
         },
       ],
     },
@@ -148,18 +164,27 @@ const Order = () => {
           name: "Every week",
           summary: "every week",
           description: "$7.20 per shipment. Includes free first-class shipping",
+          metadata: {
+            multiplier: 4,
+          },
         },
         {
           id: "bi_monthly",
           name: "Every 2 weeks",
           summary: "every 2 weeks",
           description: "$9.60 per shipment. Includes free priority shipping",
+          metadata: {
+            multiplier: 2,
+          },
         },
         {
           id: "monthly",
           name: "Every month",
           summary: "every month",
           description: "$12.00 per shipment. Includes free priority shipping",
+          metadata: {
+            multiplier: 1,
+          },
         },
       ],
     },
@@ -226,7 +251,7 @@ const Order = () => {
   // In the below onClickHandler, we are accessing the default state, reinserting it into the state via the
   // setSectionCards setter, then we are spreading what's inside the clicked section's contents within
   // the selected section. This is done so that we may update the active index within the appropriate section.
-  const onClickHandler = (card, index, sectionName) => {
+  const onClickHandler = (card, index, sectionName, quizState) => {
     const section = sectionCards[sectionName];
     const { nextSection, value_key } = section;
     if (sectionName === "sectionOne" && index === 0) {
@@ -254,51 +279,25 @@ const Order = () => {
 
     setSectionCards(updateObject);
 
-    setQuizState({
+    let qs = {
       ...quizState,
       [value_key]: card.id,
-    });
+    };
+
+    setQuizState(qs);
 
     setOrderSummary({
       ...orderSummary,
       [value_key]: card.summary,
     });
 
-    if (sectionName === "sectionThree" && card.id === "quarter") {
-      setPerShipmentPrice({
-        weekly: 7.2,
-        bi_monthly: 9.6,
-        monthly: 12.0,
-      });
-    } else if (sectionName === "sectionThree" && card.id === "half") {
-      setPerShipmentPrice({
-        weekly: 13.0,
-        bi_monthly: 17.5,
-        monthly: 22.0,
-      });
-    } else if (sectionName === "sectionThree" && card.id === "kilo") {
-      setPerShipmentPrice({
-        weekly: 22.0,
-        bi_monthly: 32.0,
-        monthly: 42.0,
-      });
+    //Type this data inside the state with everything else
+    if (sectionName === "sectionThree") {
     }
 
     // set a state for frequency once frequency is selected
-    if (sectionName === "sectionFive" && card.id === "weekly") {
-      setFrequency("weekly");
-    } else if (sectionName === "sectionFive" && card.id === "bi_monthly") {
-      setFrequency("bi_monthly");
-    } else if (sectionName === "sectionFive" && card.id === "monthly") {
-      setFrequency("monthly");
-    }
-
-    if (frequency === "weekly") {
+    if (sectionName === "sectionFive") {
       setTotalPrice(perShipmentPrice.weekly * 4);
-    } else if (frequency === "bi_monthly") {
-      setTotalPrice(perShipmentPrice.bi_monthly * 2);
-    } else if (frequency === "monthly") {
-      setTotalPrice(perShipmentPrice.monthly);
     }
 
     if (nextSection === "END") {
@@ -426,7 +425,6 @@ const Order = () => {
       setOrderSummaryModal(true);
     } else setOrderSummaryModal(false);
     console.log(orderSummaryModal);
-    setTotalPrice(totalPrice);
   };
 
   // TODO remove green color from selected card in sectionFour when capsule is selected
@@ -539,7 +537,12 @@ const Order = () => {
                                   duration: 0.5,
                                 }}
                                 onClick={() =>
-                                  onClickHandler(card, index, sectionName)
+                                  onClickHandler(
+                                    card,
+                                    index,
+                                    sectionName,
+                                    quizState
+                                  )
                                 }
                                 className={`${
                                   section.hidden && "hidden"
