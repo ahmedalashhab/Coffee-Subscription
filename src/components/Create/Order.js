@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Modal from "./Modal";
 
 const Order = () => {
-  const [perShipmentPrice, setPerShipmentPrice] = useState(0);
   const [orderComplete, setOrderComplete] = useState(false);
-  const [frequency, setFrequency] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [isCapsuleSelected, setIsCapsuleSelected] = useState(false);
   const [quizState, setQuizState] = useState({});
@@ -38,7 +36,7 @@ const Order = () => {
         {
           id: "espresso_xl",
           name: "Espresso XL",
-          summary: "espresso_xl",
+          summary: "espresso XL",
           description:
             "Dense and finely ground beans for an intense, flavorful experience",
         },
@@ -91,7 +89,7 @@ const Order = () => {
             "Perfect for the solo drinker. Yields about 12 delicious cups",
           price: {
             weekly: 7.2,
-            bi_monthly: 9.6,
+            bi_weekly: 9.6,
             monthly: 12.0,
           },
         },
@@ -103,7 +101,7 @@ const Order = () => {
             "Perfect option for a couple. Yields about 40 delectable cups",
           price: {
             weekly: 13.0,
-            bi_monthly: 17.5,
+            bi_weekly: 17.5,
             monthly: 22.0,
           },
         },
@@ -115,7 +113,7 @@ const Order = () => {
             "Perfect for offices and events. Yields about 90 delightful cups",
           price: {
             weekly: 22.0,
-            bi_monthly: 32.0,
+            bi_weekly: 32.0,
             monthly: 42.0,
           },
         },
@@ -169,7 +167,7 @@ const Order = () => {
           },
         },
         {
-          id: "bi_monthly",
+          id: "bi_weekly",
           name: "Every 2 weeks",
           summary: "every 2 weeks",
           description: "$9.60 per shipment. Includes free priority shipping",
@@ -210,6 +208,8 @@ const Order = () => {
     }
   }, [isCapsuleSelected, quizArrayLength]);
 
+  const totalPriceCacheRef = useRef(null);
+
   useEffect(() => {
     if (quizSwitch() === "sectionFive" && isCapsuleSelected) {
       setSectionCards({
@@ -223,13 +223,14 @@ const Order = () => {
           hidden: false,
         },
       });
-
-      console.log(perShipmentPrice);
-      console.log(totalPrice);
     }
-    document
-      .getElementById(quizSwitch())
-      .scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // The condition is to prevent smooth scrolling to section one on page load immediately.
+    if (sectionCards.sectionTwo.hidden === false) {
+      document
+        .getElementById(quizSwitch())
+        .scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 
     if (isCapsuleSelected) {
       // delete section 4  choices from quizstate
@@ -245,65 +246,107 @@ const Order = () => {
       setOrderComplete(false);
     }
 
+    let totalPriceCache;
+
+    if (quizState.quantity === "quarter" && quizState.frequency === "weekly") {
+      totalPriceCache = 7.2 * 4;
+    } else if (
+      quizState.quantity === "quarter" &&
+      quizState.frequency === "bi_weekly"
+    ) {
+      totalPriceCache = 9.6 * 2;
+    } else if (
+      quizState.quantity === "quarter" &&
+      quizState.frequency === "monthly"
+    ) {
+      totalPriceCache = 12.0;
+    } else if (
+      quizState.quantity === "half" &&
+      quizState.frequency === "weekly"
+    ) {
+      totalPriceCache = 13.0 * 4;
+    } else if (
+      quizState.quantity === "half" &&
+      quizState.frequency === "bi_weekly"
+    ) {
+      totalPriceCache = 17.5 * 2;
+    } else if (
+      quizState.quantity === "half" &&
+      quizState.frequency === "monthly"
+    ) {
+      totalPriceCache = 22.0;
+    } else if (
+      quizState.quantity === "kilo" &&
+      quizState.frequency === "weekly"
+    ) {
+      totalPriceCache = 22.0 * 4;
+    } else if (
+      quizState.quantity === "kilo" &&
+      quizState.frequency === "bi_weekly"
+    ) {
+      totalPriceCache = 32.0 * 2;
+    } else if (
+      quizState.quantity === "kilo" &&
+      quizState.frequency === "monthly"
+    ) {
+      totalPriceCache = 42.0;
+    }
+
+    totalPriceCacheRef.current = totalPriceCache;
+
     setTotalPrice(totalPrice);
-  }, [isCapsuleSelected, quizSwitch, totalPrice]);
+  }, [isCapsuleSelected, quizSwitch, totalPrice, quizState]);
 
   // In the below onClickHandler, we are accessing the default state, reinserting it into the state via the
   // setSectionCards setter, then we are spreading what's inside the clicked section's contents within
   // the selected section. This is done so that we may update the active index within the appropriate section.
-  const onClickHandler = (card, index, sectionName, quizState) => {
-    const section = sectionCards[sectionName];
-    const { nextSection, value_key } = section;
-    if (sectionName === "sectionOne" && index === 0) {
-      setIsCapsuleSelected(true);
-    } else if (
-      (sectionName === "sectionOne" && index === 1) ||
-      (sectionName === "sectionOne" && index === 2)
-    ) {
-      setIsCapsuleSelected(false);
-    }
-    const updateObject = {
-      ...sectionCards,
-      [sectionName]: {
-        ...section,
-        activeIndex: index,
-      },
-    };
-
-    if (nextSection !== "END") {
-      updateObject[nextSection] = {
-        ...sectionCards[nextSection],
-        hidden: false,
+  const onClickHandler = useCallback(
+    (card, index, sectionName, quizState) => {
+      const section = sectionCards[sectionName];
+      const { nextSection, value_key } = section;
+      if (sectionName === "sectionOne" && index === 0) {
+        setIsCapsuleSelected(true);
+      } else if (
+        (sectionName === "sectionOne" && index === 1) ||
+        (sectionName === "sectionOne" && index === 2)
+      ) {
+        setIsCapsuleSelected(false);
+      }
+      const updateObject = {
+        ...sectionCards,
+        [sectionName]: {
+          ...section,
+          activeIndex: index,
+        },
       };
-    }
 
-    setSectionCards(updateObject);
+      if (nextSection !== "END") {
+        updateObject[nextSection] = {
+          ...sectionCards[nextSection],
+          hidden: false,
+        };
+      }
 
-    let qs = {
-      ...quizState,
-      [value_key]: card.id,
-    };
+      setSectionCards(updateObject);
 
-    setQuizState(qs);
+      let qs = {
+        ...quizState,
+        [value_key]: card.id,
+      };
 
-    setOrderSummary({
-      ...orderSummary,
-      [value_key]: card.summary,
-    });
+      setQuizState(qs);
 
-    //Type this data inside the state with everything else
-    if (sectionName === "sectionThree") {
-    }
+      setOrderSummary({
+        ...orderSummary,
+        [value_key]: card.summary,
+      });
 
-    // set a state for frequency once frequency is selected
-    if (sectionName === "sectionFive") {
-      setTotalPrice(perShipmentPrice.weekly * 4);
-    }
-
-    if (nextSection === "END") {
-      //show summary
-    } else onClickHideHandler(false, nextSection, true);
-  };
+      if (nextSection === "END") {
+        //show summary
+      } else onClickHideHandler(false, nextSection, true);
+    },
+    [orderSummary, sectionCards, totalPrice]
+  );
 
   //TODO: remove the sectionFour choice visual (cardgreen) selected from the quizState if capsule is selected
 
@@ -424,7 +467,6 @@ const Order = () => {
     if (orderComplete === true) {
       setOrderSummaryModal(true);
     } else setOrderSummaryModal(false);
-    console.log(orderSummaryModal);
   };
 
   // TODO remove green color from selected card in sectionFour when capsule is selected
@@ -432,7 +474,7 @@ const Order = () => {
   // BELOW IS THE RENDERING OF THE COMPONENT
 
   return (
-    <section className="flex justify-center h-[2000px]">
+    <section id="page-start" className="flex justify-center">
       <div className=" flex justify-center background-cream all-width text-">
         <div className="flex justify-center w-3/4">
           <div className="flex flex-col gap-4 w-1/4 sticky h-[500px] top-20">
@@ -611,7 +653,7 @@ const Order = () => {
         toggle={orderSummaryModal}
         title="Order Summary"
         content={OrderSummaryTextModal()}
-        totalPrice={totalPrice}
+        totalPrice={totalPriceCacheRef.current}
       />
     </section>
   );

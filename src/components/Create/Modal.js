@@ -1,7 +1,6 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useRef, useState } from "react";
-import { ExclamationIcon } from "@heroicons/react/outline";
 
 const Modal = (props) => {
   const cancelButtonRef = useRef(null);
@@ -54,7 +53,7 @@ const Modal = (props) => {
                     </p>
                     <div className="flex justify-between">
                       <div className="fraunces-900 text-[32px] text-blue my-10 ml-10">
-                        {props.totalPrice}
+                        ${props.totalPrice}/ mo
                       </div>
                       <button
                         type="button"
