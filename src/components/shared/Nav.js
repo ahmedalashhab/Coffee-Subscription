@@ -8,7 +8,9 @@ const Nav = () => {
       <div className=" all-width background-cream ">
         <div className=" flex justify-between py-10 px-20">
           <div>
-            <img alt="logo" src={logo} />
+            <Link to="/">
+              <img alt="logo" src={logo} className="cursor-pointer" />
+            </Link>
           </div>
           <div className="justify-between">
             <Link
