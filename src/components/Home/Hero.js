@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import hero from "../assets/home/desktop/image-hero-coffeepress.jpg";
-import logo from "../assets/shared/desktop/logo.svg";
-
 const Hero = () => {
   return (
     <section className="flex justify-center">
@@ -20,8 +17,8 @@ const Hero = () => {
                 delivered directly to your door, at your schedule.
               </p>
               <div className="justify-items-start">
-                <button className="button-green text-[18px] text-cream fraunces-700 py-3 px-9 rounded mt-2 hover:bg-teal-400">
-                  Create your plan
+                <button className="button-green text-[18px] text-cream fraunces-700 py-3 px-9 rounded mt-2 hover:bg-teal-400 hover:scale-105 transition-all">
+                  <Link to="/create">Create your plan</Link>
                 </button>
               </div>
             </div>

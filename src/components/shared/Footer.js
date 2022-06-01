@@ -28,13 +28,13 @@ const Footer = () => {
               home
             </Link>
             <Link
-              to="about"
+              to="/about"
               className="uppercase text-gray barlow-700 text-[12px] hover:text-white transition-colors cursor-pointer"
             >
               about us
             </Link>
             <Link
-              to="create"
+              to="/create"
               className="uppercase text-gray barlow-700 text-[12px] hover:text-white transition-colors cursor-pointer"
             >
               create your plan

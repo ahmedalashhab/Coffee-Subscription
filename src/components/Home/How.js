@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const How = () => {
   return (
@@ -62,8 +63,8 @@ const How = () => {
           <div>
             <button></button>
           </div>
-          <button className="button-green text-cream fraunces-700 text-[18px] py-3 px-9 rounded-lg mb-52">
-            Create your plan
+          <button className="button-green hover:bg-teal-400 text-cream fraunces-700 text-[18px] py-3 px-9 rounded-lg mb-52">
+            <Link to="/create">Create your plan</Link>
           </button>
         </div>
       </div>

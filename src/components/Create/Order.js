@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Modal from "./Modal";
+import Footer from "../shared/Footer";
 
 const Order = () => {
   const [orderComplete, setOrderComplete] = useState(false);
@@ -469,130 +470,162 @@ const Order = () => {
     } else setOrderSummaryModal(false);
   };
 
+  const sideBarHighlight = (sectionName) => {
+    if (quizArrayLength === 0 && sectionName === "sectionOne") {
+      return "text-blue";
+    } else if (quizArrayLength === 1 && sectionName === "sectionTwo") {
+      return "text-blue";
+    } else if (quizArrayLength === 2 && sectionName === "sectionThree") {
+      return "text-blue";
+    } else if (
+      quizArrayLength === 3 &&
+      !isCapsuleSelected &&
+      sectionName === "sectionFour"
+    ) {
+      return "text-blue";
+    } else if (
+      quizArrayLength === 3 &&
+      isCapsuleSelected &&
+      sectionName === "sectionFive"
+    ) {
+      return "text-blue";
+    } else if (
+      (quizArrayLength === 4 || quizArrayLength === 5) &&
+      sectionName === "sectionFive"
+    ) {
+      return "text-blue";
+    }
+  };
+
   // TODO remove green color from selected card in sectionFour when capsule is selected
 
   // BELOW IS THE RENDERING OF THE COMPONENT
 
   return (
-    <section id="page-start" className="flex justify-center">
-      <div className=" flex justify-center background-cream all-width text-">
-        <div className="flex justify-center w-3/4">
-          <div className="flex flex-col gap-4 w-1/4 sticky h-[500px] top-20">
-            {Object.entries(sectionCards).map(
-              ([sectionName, section], index) => {
-                return (
-                  <>
-                    <span
-                      onClick={() => handleSideBarClick(section, sectionName)}
-                      className={`fraunces-700 text-[24px] ${
-                        !capsuleAndSecFour(sectionName) ? "cursor-pointer" : ""
-                      } ${capsuleSideBar(sectionName)}`}
-                    >
-                      {Number(index + 1).toLocaleString("en-US", {
-                        minimumIntegerDigits: 2,
-                        useGrouping: false,
-                      })}
-                      &nbsp; &nbsp; {section.sidebar_name}
-                    </span>
-                    <div className=" border-b-2 border-x-gray-700"></div>
-                  </>
-                );
-              }
-            )}
-          </div>
-          <div className="flex flex-col pl-28 w-5/6 mb-16 ">
-            {/* START*/}
-            {Object.entries(sectionCards).map(
-              ([sectionName, section], index) => {
-                return (
-                  <>
-                    <div
-                      className="flex mb-4 justify-between items-center"
-                      key={sectionName}
-                    >
-                      <h2
-                        className={`${
-                          !capsuleAndSecFour(sectionName)
-                            ? "text-gray"
-                            : "text-disabled"
-                        }  fraunces-900 text-[40px] leading-[48px]`}
-                        id={sectionName}
-                      >
-                        {section.title}
-                      </h2>
-                      <div
-                        onClick={() => {
-                          onClickHideHandler(!section.hidden, sectionName);
-                        }}
-                        /* Below condition disables cursor pointer if capsule is selected */
-                        className={`arrow-up ${
+    <section>
+      <div id="page-start" className="flex justify-center">
+        <div className=" flex justify-center background-cream all-width pb-36">
+          <div className="flex justify-center w-3/4">
+            <div className="flex flex-col gap-4 w-1/4 sticky h-[500px] top-20">
+              {Object.entries(sectionCards).map(
+                ([sectionName, section], index) => {
+                  return (
+                    <>
+                      <span
+                        onClick={() => handleSideBarClick(section, sectionName)}
+                        className={`fraunces-700 text-[24px] ${
                           !capsuleAndSecFour(sectionName)
                             ? "cursor-pointer"
                             : ""
-                        }`}
+                        } ${capsuleSideBar(sectionName)} ${sideBarHighlight(
+                          sectionName
+                        )}`}
                       >
-                        {/*Beautiful animation for the arrow to flip up and down using Framer*/}
-                        <motion.div
-                          initial={{ rotate: 0 }}
-                          animate={{ rotate: section.hidden ? 180 : 0 }}
-                          style={{ rotate: 0 }}
+                        {Number(index + 1).toLocaleString("en-US", {
+                          minimumIntegerDigits: 2,
+                          useGrouping: false,
+                        })}
+                        &nbsp; &nbsp; {section.sidebar_name}
+                      </span>
+                      <div className=" border-b-2 border-x-gray-700"></div>
+                    </>
+                  );
+                }
+              )}
+            </div>
+            <div className="flex flex-col pl-28 w-5/6 mb-16 ">
+              {/* START*/}
+              {Object.entries(sectionCards).map(
+                ([sectionName, section], index) => {
+                  return (
+                    <>
+                      <div
+                        className="flex mb-4 justify-between items-center"
+                        key={sectionName}
+                      >
+                        <h2
+                          className={`${
+                            !capsuleAndSecFour(sectionName)
+                              ? "text-gray"
+                              : "text-disabled"
+                          }  fraunces-900 text-[40px] leading-[48px]`}
+                          id={sectionName}
                         >
-                          <svg
-                            width="19"
-                            height="13"
-                            xmlns="http://www.w3.org/2000/svg"
+                          {section.title}
+                        </h2>
+                        <div
+                          onClick={() => {
+                            onClickHideHandler(!section.hidden, sectionName);
+                          }}
+                          /* Below condition disables cursor pointer if capsule is selected */
+                          className={`arrow-up ${
+                            !capsuleAndSecFour(sectionName)
+                              ? "cursor-pointer"
+                              : ""
+                          }`}
+                        >
+                          {/*Beautiful animation for the arrow to flip up and down using Framer*/}
+                          <motion.div
+                            initial={{ rotate: 0 }}
+                            animate={{ rotate: section.hidden ? 180 : 0 }}
+                            style={{ rotate: 0 }}
                           >
-                            <path
-                              d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
-                              fill="#0E8784"
-                              fillRule="nonzero"
-                            />
-                          </svg>
-                        </motion.div>
+                            <svg
+                              width="19"
+                              height="13"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M15.949.586l2.828 2.828-9.096 9.096L.586 3.414 3.414.586l6.267 6.267z"
+                                fill="#0E8784"
+                                fillRule="nonzero"
+                              />
+                            </svg>
+                          </motion.div>
+                        </div>
                       </div>
-                    </div>
-                    <div className={`flex justify-center gap-6 mb-16`}>
-                      {section.cards.map((card, index) => {
-                        return (
-                          <AnimatePresence key={index.toString()}>
-                            {!section.hidden && (
-                              <motion.div
-                                key={index.toString()}
-                                initial={{
-                                  y: 0,
-                                  opacity: 0,
-                                  height: 0,
-                                }}
-                                animate={{
-                                  y: 0,
-                                  opacity: 1,
-                                  height: "",
-                                }}
-                                exit={{
-                                  y: 0,
-                                  opacity: 0,
-                                  height: 0,
-                                  overflow: "hidden",
-                                }}
-                                transition={{
-                                  type: "Tween",
-                                  duration: 0.5,
-                                }}
-                                onClick={() =>
-                                  onClickHandler(
-                                    card,
-                                    index,
-                                    sectionName,
-                                    quizState
-                                  )
-                                }
-                                className={`${
-                                  section.hidden && "hidden"
-                                } flex flex-col ${
-                                  section.activeIndex === index
-                                    ? ""
-                                    : "hover:bg-orange-200 cursor-pointer"
-                                }   order-card-height rounded-lg  
+                      <div className={`flex justify-center gap-6 mb-16`}>
+                        {section.cards.map((card, index) => {
+                          return (
+                            <AnimatePresence key={index.toString()}>
+                              {!section.hidden && (
+                                <motion.div
+                                  key={index.toString()}
+                                  initial={{
+                                    y: 0,
+                                    opacity: 0,
+                                    height: 0,
+                                  }}
+                                  animate={{
+                                    y: 0,
+                                    opacity: 1,
+                                    height: "",
+                                  }}
+                                  exit={{
+                                    y: 0,
+                                    opacity: 0,
+                                    height: 0,
+                                    overflow: "hidden",
+                                  }}
+                                  transition={{
+                                    type: "Tween",
+                                    duration: 0.5,
+                                  }}
+                                  onClick={() =>
+                                    onClickHandler(
+                                      card,
+                                      index,
+                                      sectionName,
+                                      quizState
+                                    )
+                                  }
+                                  className={`${
+                                    section.hidden && "hidden"
+                                  } flex flex-col ${
+                                    section.activeIndex === index
+                                      ? ""
+                                      : "hover:bg-orange-200 cursor-pointer"
+                                  }   order-card-height rounded-lg  
                         w-1/3 transition ease-linear duration-100 
                         ${
                           section.activeIndex === index
@@ -600,61 +633,63 @@ const Order = () => {
                             : "order-card-color"
                         } 
                         `}
-                              >
-                                <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
-                                  {card.name}
-                                </h3>
-                                <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
-                                  {card.description}
-                                </p>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        );
-                      })}
-                    </div>
-                  </>
-                );
-              }
-            )}
+                                >
+                                  <h3 className="text-blue fraunces-900 text-[24px] leading-[32px] mt-8 ml-8">
+                                    {card.name}
+                                  </h3>
+                                  <p className="barlow-400 text-[16px] leading-[26px] pt-8 pl-6 pr-6">
+                                    {card.description}
+                                  </p>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                }
+              )}
 
-            {/* END */}
-            <section className="flex flex-col justify-center">
-              <div className="why w-full px-16 py-8">
-                <div className="flex flex-col justify-center  gap-3">
-                  <h3 className="uppercase barlow-400 text-gray">
-                    order summary
-                  </h3>
-                  <p className="fraunces-900 text-cream text-[24px]">
-                    <OrderSummaryText />
-                  </p>
+              {/* END */}
+              <section className="flex flex-col justify-center">
+                <div className="why w-full px-16 py-8">
+                  <div className="flex flex-col justify-center  gap-3">
+                    <h3 className="uppercase barlow-400 text-gray">
+                      order summary
+                    </h3>
+                    <p className="fraunces-900 text-cream text-[24px]">
+                      <OrderSummaryText />
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex justify-end mt-10">
-                <button
-                  onClick={handleQuizSubmit}
-                  className={`${
-                    orderComplete
-                      ? "button-green hover:bg-teal-400"
-                      : "bg-gray-300 cursor-default"
-                  } px-9 py-3 rounded-lg text-cream fraunces-700 `}
-                >
-                  Create my plan!
-                </button>
-              </div>
-            </section>
+                <div className="flex justify-end mt-10">
+                  <button
+                    onClick={handleQuizSubmit}
+                    className={`${
+                      orderComplete
+                        ? "button-green hover:bg-teal-400"
+                        : "bg-gray-300 cursor-default"
+                    } px-9 py-3 rounded-lg text-cream fraunces-700 `}
+                  >
+                    Create my plan!
+                  </button>
+                </div>
+              </section>
+            </div>
           </div>
         </div>
+        <Modal
+          setToggle={(boolean) => {
+            setOrderSummaryModal(boolean);
+          }}
+          toggle={orderSummaryModal}
+          title="Order Summary"
+          content={OrderSummaryTextModal()}
+          totalPrice={totalPriceCacheRef.current}
+        />
       </div>
-      <Modal
-        setToggle={(boolean) => {
-          setOrderSummaryModal(boolean);
-        }}
-        toggle={orderSummaryModal}
-        title="Order Summary"
-        content={OrderSummaryTextModal()}
-        totalPrice={totalPriceCacheRef.current}
-      />
+      <Footer />
     </section>
   );
 };
