@@ -513,7 +513,7 @@ const Order = () => {
                     <>
                       <span
                         onClick={() => handleSideBarClick(section, sectionName)}
-                        className={`fraunces-700 text-[24px] ${
+                        className={`fraunces-700 text-[24px] transition-all ease-linear duration-150 ${
                           !capsuleAndSecFour(sectionName)
                             ? "cursor-pointer"
                             : ""
