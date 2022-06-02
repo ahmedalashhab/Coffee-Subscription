@@ -1,6 +1,7 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Modal = (props) => {
   const cancelButtonRef = useRef(null);
@@ -55,12 +56,14 @@ const Modal = (props) => {
                       <div className="fraunces-900 text-[32px] text-blue my-10 ml-10">
                         ${props.totalPrice}/ mo
                       </div>
-                      <button
-                        type="button"
-                        className="button-green rounded-lg fraunces-900 text-[18px] px-16 my-10 py-3 justify-center mr-10 text-cream"
-                      >
-                        Checkout
-                      </button>
+                      <Link to="/">
+                        <button
+                          type="button"
+                          className="button-green hover:bg-teal-400 transition-all ease-linear duration-100 rounded-lg fraunces-900 text-[18px] px-16 my-10 py-3 justify-center mr-10 text-cream"
+                        >
+                          Checkout
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

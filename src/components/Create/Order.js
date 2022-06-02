@@ -668,7 +668,7 @@ const Order = () => {
                     onClick={handleQuizSubmit}
                     className={`${
                       orderComplete
-                        ? "button-green hover:bg-teal-400"
+                        ? "button-green hover:bg-teal-400 transition-all ease-linear duration-100"
                         : "bg-gray-300 cursor-default"
                     } px-9 py-3 rounded-lg text-cream fraunces-700 `}
                   >
